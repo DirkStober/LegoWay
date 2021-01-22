@@ -1,0 +1,232 @@
+#LyX 1.6.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section*
+Systemidentification
+\end_layout
+
+\begin_layout Standard
+The motor equations are as follows
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{eqnarray}
+R_{a}i+V_{b} & = & V_{a}\label{eq:(1)}\\
+V_{b} & = & K_{b}\dot{\theta}\label{eq:(2)}\\
+M^{a} & = & J_{m}\ddot{\theta}+B_{m}\dot{\theta}+M^{b}\label{eq:(3)}\\
+M^{a} & = & K_{t}i\label{eq:(4)}\\
+M_{b} & = & I\ddot{\theta}\label{eq:(5)-1}\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:(4)"
+
+\end_inset
+
+ in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:(3)"
+
+\end_inset
+
+ gives
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{eqnarray}
+K_{t}i & = & J_{m}\ddot{\theta}+B_{m}\dot{\theta}+M^{b}\implies\nonumber \\
+i & = & \frac{1}{K_{t}}(J_{m}\ddot{\theta}+B_{m}\dot{\theta}+M^{b})=\frac{1}{K_{t}}((J_{m}+I)\ddot{\theta}+B_{m}\dot{\theta})\approx\label{eq:(5)}\\
+ &  & \qquad\frac{1}{K_{t}}(I\ddot{\theta}+B_{m}\dot{\theta})\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:(5)-1"
+
+\end_inset
+
+ were used in the third equality, and the assumption that 
+\begin_inset Formula $I\gg J_{m}$
+\end_inset
+
+were used in the approximation.
+ Putting 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:(5)"
+
+\end_inset
+
+into 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:(1)"
+
+\end_inset
+
+ gives
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+V_{a}=\frac{R_{a}B_{m}}{K_{t}}\dot{\theta}+\frac{R_{a}I}{K_{t}}\ddot{\theta}+V_{b}=(\frac{R_{a}B_{m}}{K_{t}}+K_{b})\dot{\theta}+\frac{R_{a}I}{K_{t}}\ddot{\theta}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+here 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:(2)"
+
+\end_inset
+
+were used in the equality.
+ Multipling throug with 
+\begin_inset Formula $\frac{K_{t}}{R_{a}I}$
+\end_inset
+
+ gives
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\ddot{\theta}+\frac{1}{I}(B_{m}+\frac{K_{b}K_{t}}{R_{a}})\dot{\theta}=\frac{1}{I}\frac{K_{t}}{R_{a}}V_{a}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Putting this on state space form with the state 
+\begin_inset Formula $x=\dot{\theta}$
+\end_inset
+
+ yeilds
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\dot{x}=-ax+bV_{a}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{eqnarray*}
+a & = & \frac{1}{I}(B_{m}+\frac{K_{b}K_{t}}{R_{a}})\\
+b & = & \frac{1}{I}\frac{K_{t}}{R_{a}}\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+By using a known inputsignal 
+\begin_inset Formula $V_{a}$
+\end_inset
+
+, pe.
+ of order at least one, and taking measurements of 
+\begin_inset Formula $\dot{\theta}$
+\end_inset
+
+ corresponding to this input ,a system idetification could be done.
+ The indetified parameters will be 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+, and thus the explicit values of 
+\begin_inset Formula $B_{m},\, K_{b},\, K_{t},\, R_{a}$
+\end_inset
+
+ will not be obtained.
+ But since they only occur on the same form in the system equations as they
+ do in a and b there is no need for explicity knowing them.
+ a and b also contains the variable I wich is considered to be known with
+ good precision.
+ The obtained estimates could then be multiplied with the value of I to
+ get rid of its influence on a and b, i.e
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{eqnarray*}
+E\{I\hat{a}\} & = & (B_{m}+\frac{K_{b}K_{t}}{R_{a}})\\
+E\{I\hat{b}\} & = & \frac{K_{t}}{R_{a}}\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

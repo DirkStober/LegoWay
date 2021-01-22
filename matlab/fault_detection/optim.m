@@ -1,0 +1,37 @@
+function T = optim(c,H_us,H_d,vi_s,t_in)
+c1 = c(1);
+c2 = c(2);
+if nargin < 5
+	t0 = struct;
+	t0.ti = ones(1,15);
+	
+	t0.ti = [-1.0000    1.0000    1.0000   -1.0000    1.0000    1.0000   -1.0000    1.0000,...
+		1.0000   -1.0000    1.0000    0.5420   -1.0000    1.0000   -1.0000];
+	t1.ti = [1.0000   -1.0000    1.0000    1.0000   -1.0000    1.0000    1.0000   -1.0000,...
+		1.0000    1.0000   -1.0000    0.6354    1.0000   -1.0000   -1.0000];
+else
+	t0 = t_in;
+end	
+
+f0 = zeros(size(H_us,2),1);
+f1 = zeros(size(H_us,2),1);
+d0 = ones(size(H_d,2),1);
+for i = 1 : size(H_us,2)/2
+	f0(i*2 -1) =  1;
+	f1(i*2) =  1;
+	
+end
+
+ti = optimvar('ti',1,15,'Type','continuous',...
+	'LowerBound',-1,'UpperBound',1);
+
+prob = optimproblem('ObjectiveSense','minimize'); 
+
+T = [];
+prob.Objective =  c1 *1/((ti*vi_s*H_us*f0)^2) + c2*((ti*vi_s*H_d*d0)^2);
+sol  =solve(prob,t0);
+T = [T;sol.ti];
+prob.Objective =  c1 * 1/((ti*vi_s*H_us*f1)^2) + c2*(ti*vi_s*H_d*d0)^2;
+sol  =solve(prob,t1);
+T = [T;sol.ti];
+end

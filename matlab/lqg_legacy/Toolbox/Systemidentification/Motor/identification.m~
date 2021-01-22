@@ -1,0 +1,132 @@
+close all
+clear all
+addpath(genpath('.'));
+
+%% Create input signal for identification
+% An N-sample long prbs with major frequency content in [0 Hz, 5 Hz], and
+% amplitude between ulow and uhigh
+
+N      = 6000;       % Number of samples
+Ts     = 1E-3;       % Sampling period
+f_ny   = 1/(2*Ts);   % Nyquist frequency
+
+w_low  = 1;
+w_high = 5;
+band   = [w_low, w_high]/f_ny;    % frequency content band, normalized
+
+u_low  = -7.5;
+u_high = 7.5;  
+levels = [u_low, u_high];         % voltage range
+
+sinedata = [1, 10, 1];
+
+u_sumsine = idinput(N,'sine', band, levels, sinedata); 
+u_prbs    = idinput(N,'prbs', band, levels);
+
+%% Generate C code
+this = pwd;
+cd ../../../../Hipster_sw/SI_utils
+u2c(u_sumsine, 'u');
+cd(this);
+
+%% Get data from experiment
+
+addpath '../../Hipster_sw/SI_utils'
+%load motor_si_070709_sinusar;     % logged data from experiment, containing y and u vector
+load motor_si_070715_sinus;
+
+iy = y;
+ut = u;
+%%
+dy = dth.signals.values;
+iy = rad2deg(th.signals.values);
+
+plot(dy);
+figure;
+plot(iy);
+ut = u_sim(:,2);
+
+%%
+
+% Prepare data for identification. Smoothing of quantization steps etc. 
+[y, u] = prepDataForIdent(iy, ut, Ts);
+%u = ut;
+figure
+subplot(2,1,1)
+plot(y)
+title('output');
+xlabel('time [s]');
+ylabel('angular vel [rad/s]');
+subplot(2,1,2);
+plot(u)
+title('input');
+xlabel('time [s]');
+ylabel('input voltage [V]');
+
+%% Select part of the data that will be used in the identification
+
+i_beg = round(length(y)/6);     % index beginning, do not use the inital data that are affected by transients
+i_end = round(length(y)*(8/9)); % index end
+
+ys = y(i_beg:i_end);            % selected output data sequence 
+ys = detrend(ys);               % detrend data
+us = u(i_beg:i_end);            % selected input data sequence
+us = detrend(us);               % detrend data
+
+% Show part of the data selected for identification
+square_x = [i_beg i_end]';
+square_y = [max(y) max(y)]';
+
+area(square_x, square_y, 'FaceColor', [1 1 0], 'BaseValue', min(y))
+hold on;
+plot(y)
+axis tight
+
+%%  Identify
+
+data  = iddata(ys, us, Ts); 
+
+% Structure and initial values for ss model to be identified
+A  = 0; 
+B  = 0;
+C  = 1;
+D  = 0;
+K  = 0;
+x0 = ys(1);
+m  = idss(A, B, C, D, K, x0, 'Ts', 0, 'SSparameterization', 'structured');    %Samplingtime Ts = 0 indicates continous model
+
+% Specification of wich parameters are to be estimated. x0 is the inital
+% value of state
+m.As = NaN;
+m.Bs = NaN;
+m.Cs = m.C;
+m.Ds = m.D;
+m.Ks = m.K;
+m.x0s = x0;
+
+% identify parameters
+est_mod = pem(data,'P1D'); 
+
+%% Verification
+
+% Load fresh data set for verification
+% load motor_si_070709_prbs_ver
+
+%[y_ver u_ver] = prepDataForIdent(rad2deg(y), u, Ts);
+u_ver = u;
+y_ver = y;
+y_sim = sim(2, u_ver);
+plot([y_sim y_ver]);
+
+data = iddata(y_ver, u_ver);
+figure
+resid(est_mod,data)
+
+figure
+const = constants();
+model = idss(-const.mc1/(I), const.mc2/(I), 1, 0, 0, y_ver(1), 0);
+
+u_ver_id = iddata([], u_ver, Ts);
+y_sim = sim(model, u_ver_id);
+
+plot([y_sim.y y_ver]);

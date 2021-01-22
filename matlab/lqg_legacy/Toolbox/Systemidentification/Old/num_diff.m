@@ -1,0 +1,79 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% num_diff.m calculate the finite difference approximation of the first or
+% second order derivative of the data.
+%
+% INPUT:
+%   data  -> data vector to be differentiated
+%   order -> specifies first or second order derivative,i.e. order = 1 or 2
+%   Ts    -> time spacing between consecutive samples
+%
+% OUTPUT:
+%   d        <- a vector containing the first or second order derivative of the
+%               input data
+%   cut_beg  <- numer of samples that have been cut in the beginning of the 
+%               data sequence   
+%   cut_beg  <- numer of samples that have been cut at the end of the
+%               data sequence   
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+function [d, cut_beg, cut_end] = num_diff(data, order, Ts)
+
+if (order == 1)
+
+%{
+    data_p1  = data(3:end);
+    data_m1 = data(1:end-2); 
+    d = (data_p1 - data_m1)/(2*Ts); % threepoint approximation of first derivative
+    cut_beg = 1;
+    cut_end = 1;
+    return
+%}
+    
+
+    
+    data_p1 = data(2:end);
+    data_0  = data(1:end-1);
+    d = (data_p1 - data_0)/Ts;
+    cut_beg = 1;
+    cut_end = 0;
+    return; 
+   
+
+    %{
+    p2 = data(5:end);
+    p1 = data(4:end-1);
+    m1 = data(2:end-3);
+    m2 = data(1:end-4);   
+    d = (-p2 + 8*p1 - 8*m1 + m2)/(12*Ts);
+    cut_beg = 2;
+    cut_end = 2;
+    %}
+elseif (order == 2)
+    
+    p2 = data(5:end);
+    p1 = data(4:end-1);
+    pm0  = data(3:end-2);
+    m1 = data(2:end-3);
+    m2 = data(1:end-4);
+    d = (-m2 + 16*m1 - 30*pm0 + 16*p1 - p2)/(12*Ts^2); % fivepoint approximaion of second derivative
+    cut_beg = 2;
+    cut_end = 2;
+    return;
+    
+end
+
+% elseif order == 2
+%     
+%     data_forward  = data(3:end);
+%     data_backward = data(1:end-2);  
+%     data_mid      = data(2:end-1);      
+%     d = (data_forward - 2*data_mid + data_backward)/(Ts^2); % threepoint approximation if seconf derivative
+%     cut_beg = 1;
+%     cut_end = 1;
+%     return
+%     
+% end
+
