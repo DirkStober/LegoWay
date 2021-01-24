@@ -1,0 +1,8 @@
+#!/bin/sh
+FILE_NAME=lqg
+
+rm -r build
+
+rm ${FILE_NAME}_OSEK_rom.map  implementation.oil  kernel_cfg.c  kernel_id.h
+rm ${FILE_NAME}_OSEK*
+rm *.sh

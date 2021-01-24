@@ -1,6 +1,7 @@
+
+%% Connects to the LegoWay and plots live residuals for the sensors
 % Get connection by running sudo ./btconnect TEOBALD 0
 
-rsg = ps_sensor(6,rds,Ts);
 h = 0;  
 while(h ~= 3)
     h = fopen('/dev/rfcomm0');
@@ -34,7 +35,7 @@ subplot(313)
 title('S2')
 p3 = plot(nan,nan);
 r = zeros(3,1);
-
+r3_cum = 0;
 %%
 for i = 1 : 5000
 	% It is required to read one byte before reading package
@@ -46,15 +47,16 @@ for i = 1 : 5000
                 k = (i-1)*10 + j;
                 if k > 7
                    k = (i-1)*10 + j;
-                   r = rsg*[raw_data(:,k-6);raw_data(:,k-5);raw_data(:,k-4);raw_data(:,k-3);raw_data(:,k-2);raw_data(:,k-1);raw_data(:,k)];
+                   r = rC(1:3,:)*[raw_data(:,k-6);raw_data(:,k-5);raw_data(:,k-4);raw_data(:,k-3);raw_data(:,k-2);raw_data(:,k-1);raw_data(:,k)];
                 end
+                r3_cum = r3_cum + r(3);
                 pl.XData(end+1) = k;
                 p2.XData(end+1) = k;
                 p3.XData(end+1) = k;
 
                 pl.YData(end+1) = r(1);
                 p2.YData(end+1) = r(2);
-                p3.YData(end+1) = r(3);
+                p3.YData(end+1) = r3_cum;
                 drawnow limitrate
         end
 	catch
@@ -69,22 +71,5 @@ disp('Finished Reading Data');
 fclose(h)
 
 
-function inp = pars_input(in_x)
-    inp = in_x;
-    for i = 0:9
-        
-        if(inp(i*5+4) > 100)
-            inp(i*5+4) = 100;
-        elseif(inp(i*5+4) < 100)
-            inp(i*5+4) = -100;
-        end
-        
-        if(inp(i*5+5) > 100)
-            inp(i*5+5) = 100;
-        elseif(inp(i*5+5) < 100)
-            inp(i*5+5) = -100;
-        end
-    end
-end
 
 

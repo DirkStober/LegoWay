@@ -37,7 +37,7 @@ yuw = yu_window(ns,Ts);
 [rsC,H_us,H_os,vi_s] = parity_space(ds,Ts,ns);
 r0 = ps_single(ds,Ts,ns,1);
 r1 = ps_single(ds,Ts,ns,2);
-r2 = rsC(1,:);
+r2 = ps_gyro(rsC,vi_s,ds);
 %%
 % Generate fault and disturbance ps matrix
 [H_f,H_d] = ps_matrices(ds);
@@ -47,7 +47,7 @@ rC = [r0;r1;r2;r34];
 %%  faults
 %start of fault and end of fault
 fault_start = 10;
-fault_stop = 15;
+fault_stop = 30;
 f_t = [fault_start;fault_stop];
 
 % sensor fault offset

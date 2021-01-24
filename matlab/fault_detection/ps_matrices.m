@@ -1,12 +1,7 @@
-%Script initializing the matrices for different 
-
-% Sensor offset and drift
-% As D of the linearized system is 0 actuator faults have no influence of F_f
-% 3 sensor faults (offset/drift)
-% 2 actuator faults (gain)
-
-
-
+%Function to generate H_f and H_d for different fault and
+% distubance dynamics
+% default is generated for F_f = 0, E_f = B 
+% => generates residuals for actuator faults
 function [H_f,H_d] = ps_matrices(ds,F_f,E_f,E_d,F_d)
 
 

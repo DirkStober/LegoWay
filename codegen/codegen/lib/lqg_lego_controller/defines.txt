@@ -1,0 +1,1 @@
+MODEL=lqg_lego_controller

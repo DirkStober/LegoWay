@@ -1,3 +1,5 @@
+
+%% Use This script to connect to the LegoWay and collect data
 % Get connection by running sudo ./btconnect TEOBALD 0
 
 h = 0;  
