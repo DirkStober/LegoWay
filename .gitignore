@@ -51,7 +51,12 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-
 # Matlab/Simulink files
 *.slxc
 slprj/
+
+# Eclipse Files?
+*.cproject
+*.project
+*.cdtproject
+
