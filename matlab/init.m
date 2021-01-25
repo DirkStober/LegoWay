@@ -41,7 +41,7 @@ r2 = ps_gyro(rsC,vi_s,ds);
 %%
 % Generate fault and disturbance ps matrix
 [H_f,H_d] = ps_matrices(ds);
-T = optim([1 5],H_f,H_d,vi_s);
+T = optim([2 5],H_f,H_d,vi_s);
 r34 = T*[vi_s,-vi_s*H_us];
 rC = [r0;r1;r2;r34];
 %%  faults

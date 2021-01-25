@@ -1,2 +1,2 @@
-# LegoWay
-Embedded contol systems porject at Uppsala University
+# Fault Detection on a LegoWay
+Embedded contol system project at Uppsala University
